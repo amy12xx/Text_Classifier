@@ -62,6 +62,15 @@ def load_data_sets():
 	all_course_data = pickle.load(open('Documents/pythonfiles/CB_scripts/Text_Classifier/data/course_corpus.pkl', 'rb'))
 	return all_course_data
 
+def test_classifier_metrics(classifier, X_test, y_test, X, y, predicted):
+	print('classifier score:   %0.3f' %classifier.score(X_test, y_test)
+	#print(classifier.score(X_test, y_test))
+	print 'confusion matrix:'
+	print(confusion_matrix(predicted, y_test))
+	print('cross validation score:   %0.3f' %cross_validation.cross_val_score(classifier, X, y, scoring='accuracy')
+	score = metrics.f1_score(y_test, predicted)
+ 	print("f1-score:   %0.3f" % score)
+
 def SVMClassify():
 	all_course_data = load_data_sets()
 	y = [d[0] for d in all_course_data]
@@ -75,12 +84,8 @@ def SVMClassify():
 	pred = svm.predict(X_test)
 	#svm = train_svm(X,y)
 
-	print 'confusion matrix'
-	print(svm.score(X_test, y_test))
-	print(confusion_matrix(pred, y_test))
-	print cross_validation.cross_val_score(svm, X, y, scoring='accuracy')
- 	score = metrics.f1_score(y_test, pred)
- 	print("f1-score:   %0.3f" % score)
+	print 'LinearSVC metrics'
+	test_classifier_metrics(svm, X_test, y_test, X, y, pred)
 
  	########### Test unclassified data ########################
 	# unclassified_file = 'Documents/pythonfiles/CB_scripts/Text_Classifier/data/unclassified_courses.txt'
@@ -98,12 +103,19 @@ def SVMClassify():
 	# 		final_file.write(p + '\n')
 
 def MultionomialNBClassify():
+	all_course_data = load_data_sets()
+	y = [d[0] for d in all_course_data]
+	corpus = [d[1] for d in all_course_data]
+
+	vectorizer = TfidfVectorizer(min_df=1, stop_words='english')
+	X = vectorizer.fit_transform(corpus)
+
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=35)
 	clf = MultinomialNB(alpha=0.8, class_prior=None, fit_prior=True)
 	clf.fit(X_train, y_train)
 	pred = clf.predict(X_test)
-	print 'confusion matrix'
-	print(clf.score(X_test, y_test))
-	print(confusion_matrix(pred, y_test))
+	print 'MultinomialNB metrics'
+	test_classifier_metrics(clf, X_test, y_test, X, y, pred)
 
 def grid_search_SVC():
 	parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
@@ -159,14 +171,12 @@ def kNN():
 	clf = neighbors.KNeighborsClassifier(2, weights='distance')
 	clf.fit(X_train,y_train)
 	pred = clf.predict(X_test)
-	print 'confusion matrix nearest neighbours'
-	print(clf.score(X_test, y_test))
-	print(confusion_matrix(pred, y_test))
-
+	print 'Nearest Neighbours metrics'
+	test_classifier_metrics(clf, X_test, y_test, X, y, pred)
 
 def main():
-	#SVMClassify()
-	kNN()
+	SVMClassify()
+	#kNN()
 	#MultinomialNBClassify()
 	#grid_search_SVC()
 	#grid_search_LinearSVC()
