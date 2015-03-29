@@ -63,13 +63,13 @@ def load_data_sets():
 	return all_course_data
 
 def test_classifier_metrics(classifier, X_test, y_test, X, y, predicted):
-	print('classifier score:   %0.3f' %classifier.score(X_test, y_test)
-	#print(classifier.score(X_test, y_test))
-	print 'confusion matrix:'
+	print('classifier score:   %0.3f' %classifier.score(X_test, y_test))
+	print 'confusion matrix'
 	print(confusion_matrix(predicted, y_test))
-	print('cross validation score:   %0.3f' %cross_validation.cross_val_score(classifier, X, y, scoring='accuracy')
 	score = metrics.f1_score(y_test, predicted)
  	print("f1-score:   %0.3f" % score)
+ 	print 'cross validation score:'
+	print cross_validation.cross_val_score(classifier, X, y, scoring='accuracy', cv=4)
 
 def SVMClassify():
 	all_course_data = load_data_sets()
