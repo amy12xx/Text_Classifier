@@ -44,7 +44,9 @@ def load_data_sets():
     """
 	basefilename = 'Documents/pythonfiles/CB_scripts/Text_Classifier/data/'
 	training_data_set = ['wsu_courses.txt', 'penn_courses.txt', 'uw_courses.txt', 'berkeley_courses.txt']
-
+	
+	''' Slightly different formats of course_corpus2 and other data files; Hence two different mthds for preprocessing
+	'''
 	all_course_data = process_file(basefilename+"course_corpus2.txt")
 	for data_set in training_data_set:
 		filename = str(basefilename + data_set)
