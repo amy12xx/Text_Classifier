@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+''' Pickle the training data from /data folder to single file, to use by text classifier
+'''
 
 import pickle
 import os
